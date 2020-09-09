@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class AccountControllerTest {
 
-    private static final String ACCOUNT_API = "/api/account";
+    private static final String ACCOUNT_API = "/api/accounts";
 
     @Autowired
     MockMvc mvc;
@@ -70,7 +70,7 @@ public class AccountControllerTest {
                 .andExpect(jsonPath("number").value(dto.getNumber()))
                 .andExpect(jsonPath("agency").value(dto.getAgency()))
                 .andExpect(jsonPath("bank").isNotEmpty())
-                .andExpect(jsonPath("agency").value(dto.getBank().name()))
+                .andExpect(jsonPath("bank").value(dto.getBank().name()))
 
 
         ;
@@ -160,7 +160,7 @@ public class AccountControllerTest {
                 .agency(1)
                 .number(123456)
                 .digit(2)
-                .balance(new BigDecimal("100.00"))
+                .balance(new BigDecimal("100.0"))
                 .build();
     }
 
@@ -172,7 +172,7 @@ public class AccountControllerTest {
                 .agency(1)
                 .number(123456)
                 .digit(2)
-                .balance(new BigDecimal("100.00"))
+                .balance(new BigDecimal("100.0"))
                 .build();
 
     }
