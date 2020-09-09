@@ -8,3 +8,5 @@ addons:
       - oracle-java9-installer
 before_install:
   - chmod +x mvnw
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
