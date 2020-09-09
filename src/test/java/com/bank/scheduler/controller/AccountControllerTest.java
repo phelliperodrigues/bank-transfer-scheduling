@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.math.BigDecimal;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -55,11 +56,7 @@ public class AccountControllerTest {
 
         var json = writeValueAsString(dto);
 
-        var request =
-                post(ACCOUNT_API)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON)
-                        .content(json);
+        var request = postMethod(json);
 
         mvc
                 .perform(request)
@@ -79,8 +76,14 @@ public class AccountControllerTest {
     @Test
     @DisplayName("[CREATE] - Should show exception when create a invalid account")
     public void showExceptionWhenCreateInvalid() throws Exception {
-        Assertions.fail();
+        var json = writeValueAsString(new AccountDTO());
+        var request = postMethod(json);
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", hasSize(4)));
     }
+
+
 
     @Test
     @DisplayName("[CREATE] - Should show message exceptions that agence required")
@@ -176,7 +179,12 @@ public class AccountControllerTest {
                 .build();
 
     }
-
+    private MockHttpServletRequestBuilder postMethod(String json) {
+        return post(ACCOUNT_API)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(json);
+    }
     private String writeValueAsString(AccountDTO dto) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(dto);
     }
