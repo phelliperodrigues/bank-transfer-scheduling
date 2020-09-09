@@ -4,6 +4,7 @@ import com.bank.scheduler.controller.dto.AccountDTO;
 import com.bank.scheduler.model.Account;
 import com.bank.scheduler.model.enums.Bank;
 import com.bank.scheduler.service.AccountService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -47,19 +47,15 @@ public class AccountControllerTest {
     @Test
     @DisplayName("[CREATE] - Should success create a account")
     public void createValid() throws Exception {
-        AccountDTO dto = createValidAccount();
-        Account saved = Account.builder()
-                .id(10L)
-                .bank(Bank.NU_BANK)
-                .agency(1)
-                .number(123456)
-                .digit(2)
-                .balance(new BigDecimal("100.00"))
-                .build();
+        var dto = createValidAccountDTO();
+
+        var saved = createAccountEntity();
+
         given(service.save(any(Account.class))).willReturn(saved);
 
-        String json = new ObjectMapper().writeValueAsString(dto);
-        MockHttpServletRequestBuilder request =
+        var json = writeValueAsString(dto);
+
+        var request =
                 post(ACCOUNT_API)
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON)
@@ -79,7 +75,6 @@ public class AccountControllerTest {
 
         ;
     }
-
 
     @Test
     @DisplayName("[CREATE] - Should show exception when create a invalid account")
@@ -159,7 +154,7 @@ public class AccountControllerTest {
         Assertions.fail();
     }
 
-    private AccountDTO createValidAccount() {
+    private AccountDTO createValidAccountDTO() {
         return AccountDTO.builder()
                 .bank(Bank.NU_BANK)
                 .agency(1)
@@ -167,5 +162,22 @@ public class AccountControllerTest {
                 .digit(2)
                 .balance(new BigDecimal("100.00"))
                 .build();
+    }
+
+
+    private Account createAccountEntity() {
+        return Account.builder()
+                .id(10L)
+                .bank(Bank.NU_BANK)
+                .agency(1)
+                .number(123456)
+                .digit(2)
+                .balance(new BigDecimal("100.00"))
+                .build();
+
+    }
+
+    private String writeValueAsString(AccountDTO dto) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(dto);
     }
 }
