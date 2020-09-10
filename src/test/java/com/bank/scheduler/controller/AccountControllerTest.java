@@ -161,7 +161,7 @@ public class AccountControllerTest {
         return AccountDTO.builder()
                 .bank(Bank.NU_BANK)
                 .agency(1)
-                .number(123456)
+                .number(123456L)
                 .digit(2)
                 .balance(new BigDecimal("100.0"))
                 .build();
