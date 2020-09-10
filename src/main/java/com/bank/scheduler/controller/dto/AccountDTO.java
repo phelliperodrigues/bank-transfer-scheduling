@@ -36,4 +36,8 @@ public class AccountDTO {
     private Integer digit;
 
     private BigDecimal balance;
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance == null ? BigDecimal.ZERO : balance;
+    }
 }

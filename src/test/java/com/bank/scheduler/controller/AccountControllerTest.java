@@ -213,7 +213,7 @@ public class AccountControllerTest {
         mvc
                 .perform(request)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("balance").value("0.0"));
+                .andExpect(jsonPath("balance").value("0"));
     }
 
 
