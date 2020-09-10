@@ -188,6 +188,36 @@ public class AccountControllerTest {
     }
 
     @Test
+    @DisplayName("[CREATE] - Should return default value of balance")
+    public void createAccountWithoutBalanceTest() throws Exception {
+        var dto = AccountDTO.builder()
+                .bank(Bank.NU_BANK)
+                .agency(12)
+                .number(123456L)
+                .digit(2)
+                .build();
+        var saved = Account.builder()
+                .id(10L)
+                .bank(Bank.NU_BANK)
+                .agency(1)
+                .number(123456)
+                .digit(2)
+                .build();
+
+        given(service.save(any(Account.class))).willReturn(saved);
+
+        var json = writeValueAsString(dto);
+
+        var request = postMethod(json);
+
+        mvc
+                .perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("balance").value("0.0"));
+    }
+
+
+    @Test
     @DisplayName("[READ] - Should return all Account")
     public void showAll() throws Exception {
         Assertions.fail();
