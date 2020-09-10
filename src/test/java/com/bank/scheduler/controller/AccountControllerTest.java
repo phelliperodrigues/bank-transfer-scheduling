@@ -86,27 +86,105 @@ public class AccountControllerTest {
 
 
     @Test
-    @DisplayName("[CREATE] - Should show message exceptions that agence required")
-    public void createInvalidAccountWithoutAgenceTest() throws Exception {
-        Assertions.fail();
+    @DisplayName("[CREATE] - Should show message exceptions that agency required")
+    public void createInvalidAccountWithoutAgencyTest() throws Exception {
+        var dto = AccountDTO.builder()
+                .bank(Bank.NU_BANK)
+                .number(123456L)
+                .digit(2)
+                .balance(new BigDecimal("100.0"))
+                .build();
+
+
+        var json = writeValueAsString(dto);
+
+        var request = postMethod(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors[0]").value("Agency is required"));
+
+    }
+
+    @Test
+    @DisplayName("[CREATE] - Should show message exceptions that agency cannot be less than 1")
+    public void createInvalidAccountWithAgencyNegativeNumberTest() throws Exception {
+        var dto = AccountDTO.builder()
+                .bank(Bank.NU_BANK)
+                .agency(-1)
+                .number(123456L)
+                .digit(2)
+                .balance(new BigDecimal("100.0"))
+                .build();
+
+        var json = writeValueAsString(dto);
+
+        var request = postMethod(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors[0]").value("must be greater than or equal to 1"));
+
     }
 
     @Test
     @DisplayName("[CREATE] - Should show message exceptions that number required")
     public void createInvalidAccountWithoutNumberTest() throws Exception {
-        Assertions.fail();
+        var dto = AccountDTO.builder()
+                .bank(Bank.NU_BANK)
+                .agency(12)
+                .digit(2)
+                .balance(new BigDecimal("100.0"))
+                .build();
+
+        var json = writeValueAsString(dto);
+
+        var request = postMethod(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors[0]").value("Number is required"));
     }
 
     @Test
-    @DisplayName("[CREATE] - Should show message exceptions that balance required")
-    public void createInvalidAccountWithoutBalanceTest() throws Exception {
-        Assertions.fail();
+    @DisplayName("[CREATE] - Should show message exceptions that number cannot be less than 10000")
+    public void createInvalidAccountWithNumberNegativeTest() throws Exception {
+        var dto = AccountDTO.builder()
+                .bank(Bank.NU_BANK)
+                .agency(12)
+                .number(1000L)
+                .digit(2)
+                .balance(new BigDecimal("100.0"))
+                .build();
+
+        var json = writeValueAsString(dto);
+        System.out.println(json);
+        var request = postMethod(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors[0]").value("must be greater than or equal to 10000"));
+
     }
+
 
     @Test
     @DisplayName("[CREATE] - Should show message exceptions that bank required")
     public void createInvalidAccountWithoutBankTest() throws Exception {
-        Assertions.fail();
+        var dto = AccountDTO.builder()
+                .number(123456L)
+                .agency(12)
+                .digit(2)
+                .balance(new BigDecimal("100.0"))
+                .build();
+
+        var json = writeValueAsString(dto);
+
+        var request = postMethod(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors[0]").value("Bank is required"));
     }
 
     @Test
